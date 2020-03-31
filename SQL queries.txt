@@ -1,0 +1,175 @@
+Write a query to select all the customer that have contact title sales agent.
+Answer: 
+SELECT *
+FROM customers
+WHERE ContactTitle="Sales Agent";
+
+Write a query to select all the customer that have region different than NULL
+Answer: 
+SELECT *
+FROM customers
+WHERE Region<>"NULL";
+
+Write a query to select the unit price and quantity of the products that discount.
+Answer: 
+SELECT UnitPrice, Quantity
+FROM `order details`
+WHERE Discount>0;
+
+Write a query to select the product name (in products table) of all the items that are not in stock.
+Answer: 
+SELECT ProductName
+FROM products
+WHERE UnitsInStock=0;
+
+Write multiple query to determine how much orders each of the companies have.
+Answer: 
+SELECT customers.CompanyName, COUNT(orders.CustomerID) AS NoOfOrders
+FROM (customers
+INNER JOIN orders ON customers.CustomerID = orders.CustomerID)
+GROUP BY customers.CompanyName;
+
+SELECT customers.CompanyName, customers.CustomerID, COUNT(orders.CustomerID) AS NoOfOrders
+FROM (customers
+INNER JOIN orders ON customers.CustomerID = orders.CustomerID)
+GROUP BY customers.CompanyName;
+
+Write a query to select all from the Order Details table where the unit price is between 14 and 50.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE UnitPrice BETWEEN 14 AND 50;
+
+
+Write a query to select all from the Order Details table where the quantity is between 20 and 45.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE Quantity BETWEEN 20 AND 45;
+
+
+Now we will combine exercises 1 and 2. Write a query to select all from the Order Details table where the unit price is between 14 and 50 or quantity is between 20 and 45.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE (UnitPrice BETWEEN 14 AND 50) OR (Quantity BETWEEN 20 AND 45);
+
+
+Write a query to select all from the Order Details table where the product ID number is starting with the number 3.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE ProductID LIKE '3%';
+
+Write a query to select all from the Order Details table where the product ID number is starting with the number 5 but exclude the single digit numbers.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE ProductID LIKE '5_%';
+
+
+Write a query to select all from the Order Details table where the product ID number contains only one digit.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE ProductID LIKE '_';
+
+
+Now we are going to combine exercise 3 with 4. Write a query to select all from the Order Details table where the unit price is between 14 and 50 or the quantity is not between 20 and 45, but the product id number should start with the number 2.
+Answer: 
+SELECT *
+FROM `order details`
+WHERE ((UnitPrice BETWEEN 14 AND 50) OR (Quantity NOT BETWEEN 20 AND 45)) AND ProductID LIKE '2%'
+
+
+Write a query to select all from the Customers table where the country is Germany, France and Spain.
+Answer: 
+SELECT *
+FROM customers
+WHERE Country IN ('Germany', 'France', 'Spain');
+
+
+Write a query to select all from the Customers table where the country is Germany, France and Spain, but exclude the cities Lyon, Paris, Madrid and Berlin.
+Answer: 
+SELECT *
+FROM customers
+WHERE Country IN ('Germany', 'France', 'Spain') AND City NOT IN ('Lyon', 'Paris', 'Madrid', 'Berlin') 
+
+Write a query to select the smallest quantity from order details table where the unit price is between 30 and 50.
+Answer: 
+SELECT MIN(Quantity)
+FROM `order details`
+WHERE UnitPrice BETWEEN 30 AND 50;
+
+Write a query to select the smallest  unit price from order details table where the discount is 15% (0.15).
+Answer: 
+SELECT MIN(UnitPrice)
+FROM `order details`
+WHERE Discount LIKE '0.05%';
+Тука ставив LIKE бидејќи тоа поле е float па од она што го прочитав вака ми беше логично да направам. Може има и друг начин, но ако ставев само 0.05 не ми даваше резлултат.
+
+Write a query to select the largest freight from orders table where the ship city is Madrid, Boise and Graz.
+Answer: 
+SELECT MAX(o.Freight)
+FROM orders o
+WHERE o.ShipCity IN ('Madrid', 'Boise', 'Graz');
+
+
+Write a query to select the largest amount of money (unit price multiplied by quantity) for an order in order details table, disregarding the discount.
+Answer: 
+SELECT MAX(UnitPrice * Quantity) AS MAX_AMOUNT
+FROM `order details`;
+
+Write a query to select the smallest amount of money (unit price multiplied by quantity) for an order in order details table, disregarding the discount.
+Answer: 
+SELECT MIN(UnitPrice * Quantity) AS MIN_AMOUNT
+FROM `order details`;
+
+Write a SQL query to calculate the average amount of freight from orders where customer id starts with the letter a.
+Answer: 
+SELECT AVG(o.Freight)
+FROM orders o
+WHERE o.CustomerID LIKE 'a%';
+
+
+Write a query to count how many customers (from the customers table) are from UK and USA.
+Answer: 
+SELECT COUNT(c.CustomerID)
+FROM customers c
+WHERE c.Country IN ('UK', 'USA');
+
+Write a query to count how many customers (from the customers table) are not from UK and USA. 
+Answer: 
+SELECT COUNT(c.CustomerID)
+FROM customers c
+WHERE c.Country NOT IN ('UK', 'USA');
+
+We need to return list of: ID of Order, ID of Customer and ID of Employee from orders table, and ID of Product and also Quantity from order details table, only where there is match for the order.
+Answer:
+SELECT o.OrderID, o.CustomerID, o.EmployeeID, od.ProductID, od.Quantity
+FROM orders o
+JOIN `order details` AS od
+ON o.OrderID = od.OrderID;
+
+We need to select all Companies from customer table and return list of all orders they might have, sorted by Name of Company.
+Answer:
+SELECT c.CompanyName, o.OrderID
+FROM customers c
+LEFT JOIN orders o
+ON c.CustomerID = o.CustomerID
+ORDER BY c.CompanyName;
+
+We need to select the ID of Order, Employee Last Name, Employee First Name and Date of Order, for all orders which match the ID of Employee.
+Answer:
+SELECT o.OrderID, e.LastName, e.FirstName, o.OrderDate
+FROM orders o
+RIGHT JOIN employees e
+ON o.EmployeeID = e.EmployeeID
+ORDER BY e.LastName;
+
+We need to list Company Name, Contact Name and Order ID for all records from customers table and all records from orders table which can be mapped by the ID of Customer.
+Answer:
+SELECT c.CompanyName,c.ContactName, o.OrderID FROM customers c LEFT JOIN orders o ON c.CustomerID=o.CustomerID
+UNION 
+SELECT c.CompanyName,c.ContactName, o.OrderID FROM customers c RIGHT JOIN orders o ON c.CustomerID=o.CustomerID;
+
